@@ -1,20 +1,22 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useRecoilValue } from 'recoil'
 import Banner from '../components/Banner'
 import Header from '../components/Header'
 import Row from '../components/Row'
+import useAuth from '../hooks/useAuth'
 import { Movie } from '../typings'
 import requests from '../utils/requests'
-
+import { modalState, movieState } from '../atoms/modalAtom'
+import Modal from '../components/Modal'
 interface Props {
-  netflixOriginals: [Movie]
-  trendingNow: [Movie]
-  topRated: [Movie]
-  actionMovies: [Movie]
-  comedyMovies: [Movie]
-  horrorMovies: [Movie]
-  romanceMovies: [Movie]
-  documentaries: [Movie]
+  netflixOriginals: Movie[]
+  trendingNow: Movie[]
+  topRated: Movie[]
+  actionMovies: Movie[]
+  comedyMovies: Movie[]
+  horrorMovies: Movie[]
+  romanceMovies: Movie[]
+  documentaries: Movie[]
 }
 const Home = ({
   netflixOriginals,
@@ -26,13 +28,15 @@ const Home = ({
   romanceMovies,
   documentaries,
 }: Props) => {
+  const { loading } = useAuth()
+  const showModal = useRecoilValue(modalState)
+  if (loading) return null
   return (
     <div className="relative h-screen bg-gradient-to-b  lg:h-[140vh]">
       <Head>
         <title>Homepage - Netflix</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <Header />
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
@@ -48,7 +52,7 @@ const Home = ({
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
-      {/* Modal */}
+      ${showModal && <Modal />}
     </div>
   )
 }
